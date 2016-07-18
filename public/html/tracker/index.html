@@ -1,0 +1,40 @@
+<p>
+AWS tracker will find availiable EBS volumes and Stopped instance volumes and caldulate an estimated montly cost.
+Removing or making snapshots of these volumes could save on AWS overall cost.
+</p>
+
+<div class="container">
+  <div class="row">
+        <div class="col-md-12" class="region">
+          <nav class="navbar navbar-default">
+             <span class="label label-default">All Regions</span>
+             <div>Total (Not in use)Volumes: {{shareddata.volumes.length}}</div>
+             <div>Total Storage: {{shareddata.storage}} GB</div>
+             <div>Estimated monthy cost: {{shareddata.cost | currency}}</div>
+          </nav>
+        </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4" ng-repeat="region in regions">
+      <div ng-controller="RegionController" ng-init="init(region)" class="region">
+        <nav class="navbar navbar-default">
+           <span class="label label-default">{{region}}</span>
+        </nav>
+        <div>Total (Not in use)Volumes: {{volumes.length}}</div>
+        <div>Total Storage: {{total_storage}} GB</div>
+        <div>Estimated monthy cost: {{total_cost | currency}}</div>
+        <span ng-repeat="reservation in reservations">
+          <div ng-repeat="instance in reservation.Instances">
+              <div ng-repeat="volume in instance.BlockDeviceMappings">
+                <!-- {{volume.DeviceName}} -->
+                <div ng-controller="VolumeController" ng-init="init(volume.Ebs.VolumeId)">
+                  <!-- Storage: {{volumedata.Size}} -->
+                </div>
+              </div>
+          </div>
+        </span>
+
+      </div>
+    </div>
+  </div>
+</div>

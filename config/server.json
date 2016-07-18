@@ -1,0 +1,19 @@
+{
+  "development": {
+    "port": 45480,
+    "secure": false,
+    "cookiekey": "changeme!23fds!@Fes"
+  },
+  "local": {
+    "port": 45480,
+    "secure": false,
+    "cookiekey": "changeme!23fds!@Fes"
+  },
+  "production": {
+    "port": 8080,
+    "secure": true,
+    "key": ".ssh/keyname.com.key",
+    "pem": ".ssh/keyname.com.pem",
+    "cookiekey": "changeme!23fds!@Fes"
+  }
+}

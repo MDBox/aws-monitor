@@ -1,0 +1,23 @@
+{
+  "name": "simple-node",
+  "description": "A base setup for node development with vagrant file",
+  "main": "index.js",
+  "license": "ISC",
+  "homepage": "https://github.com/MDBox/simple-node",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.0.0",
+    "underscore": "^1.8.3",
+    "aws-sdk": "^2.4.7",
+    "angular": "1.5.7",
+    "bootstrap": "^3.3.6",
+    "angular-route": "^1.5.7"
+  }
+}
