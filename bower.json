@@ -1,9 +1,9 @@
 {
-  "name": "simple-node",
-  "description": "A base setup for node development with vagrant file",
+  "name": "Aws volume tracker",
+  "description": "A simple tool to find aws volumes",
   "main": "index.js",
   "license": "ISC",
-  "homepage": "https://github.com/MDBox/simple-node",
+  "homepage": "https://github.com/MDBox/aws-monitor",
   "private": true,
   "ignore": [
     "**/.*",

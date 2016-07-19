@@ -1,17 +1,17 @@
 {
-  "name": "simple-node",
+  "name": "Aws volume tracker",
+  "description": "A simple tool to find aws volumes",
   "version": "1.0.0",
-  "description": "A base setup for node development with vagrant file",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "MDBox <michael.bawiec@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MDBox/simple-node/issues"
+    "url": "https://github.com/MDBox/aws-monitor/issues"
   },
-  "homepage": "https://github.com/MDBox/simple-node#readme",
+  "homepage": "https://github.com/MDBox/aws-monitor#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "cookie-parser": "^1.4.3",
