@@ -1,14 +1,15 @@
-<p>
-AWS tracker will find availiable EBS volumes and Stopped instance volumes and caldulate an estimated montly cost.
-Removing or making snapshots of these volumes could save on AWS overall cost.
-</p>
 
 <div class="container">
   <div class="row">
         <div class="col-md-12" class="region">
+          <p>
+          Volume data is being checked from AWS. Below we will show volumes that are not attached(red) and
+          volumes that are attached but on a stopped instance(yellow). The estimated cost is based on $0.12
+          GB/Month. The actual cost will vary based on region and storage type.
+          </p>
           <nav class="navbar navbar-default">
              <span class="label label-default">All Regions</span>
-             <div>Total (Not in use)Volumes: {{shareddata.volumes.length}}</div>
+             <div>Total Volumes: {{shareddata.volumes.length}}</div>
              <div>Total Storage: {{shareddata.storage}} GB</div>
              <div>Estimated monthy cost: {{shareddata.cost | currency}}</div>
           </nav>
@@ -18,22 +19,37 @@ Removing or making snapshots of these volumes could save on AWS overall cost.
     <div class="col-md-4" ng-repeat="region in regions">
       <div ng-controller="RegionController" ng-init="init(region)" class="region">
         <nav class="navbar navbar-default">
-           <span class="label label-default">{{region}}</span>
+           <div class="btn-group btn-group-xs">
+             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               {{region}} <span class="caret"></span>
+             </button>
+             <ul class="dropdown-menu">
+               <li ng-repeat="vol in regiondata.volumes" class="list-group-item-warning"><span class="label label-default">{{vol.VolumeId}} -- {{vol.Size}} GB</span></li>
+             </ul>
+           </div>
         </nav>
-        <div>Total (Not in use)Volumes: {{volumes.length}}</div>
-        <div>Total Storage: {{total_storage}} GB</div>
-        <div>Estimated monthy cost: {{total_cost | currency}}</div>
+        <div>Total (Not in use)Volumes: {{regiondata.volumes.length}}</div>
+        <div>Total Storage: {{regiondata.storage}} GB</div>
+        <div>Estimated monthy cost: {{regiondata.cost | currency}}</div>
+
+        <div class="progress">
+          <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: {{100*(regiondata.attached/regiondata.volumes.length)}}%">
+            <span class="sr-only">{{100*(regiondata.attached/regiondata.volumes.length)}}% attached but instance stopped</span>
+          </div>
+          <div class="progress-bar progress-bar-danger" style="width: {{100*(regiondata.notattached/regiondata.volumes.length)}}%">
+            <span class="sr-only">{{100*(regiondata.notattached/regiondata.volumes.length)}}% volumes not attached</span>
+          </div>
+        </div>
+
+        <!-- Future design area to display instance and volume information -->
         <span ng-repeat="reservation in reservations">
           <div ng-repeat="instance in reservation.Instances">
               <div ng-repeat="volume in instance.BlockDeviceMappings">
-                <!-- {{volume.DeviceName}} -->
                 <div ng-controller="VolumeController" ng-init="init(volume.Ebs.VolumeId)">
-                  <!-- Storage: {{volumedata.Size}} -->
                 </div>
               </div>
           </div>
         </span>
-
       </div>
     </div>
   </div>

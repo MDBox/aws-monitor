@@ -2,35 +2,37 @@ var awstracker = angular.module('awstracker', ['ngRoute', 'awsService']);
 
 awstracker.config(function($routeProvider, $locationProvider){
   $routeProvider.when('/',{
-    templateUrl: '/html/tracker',
-    controller: 'AwsController as awsController'
-  }).when('/:keyid/:cred', {
+    templateUrl: '/html/tracker/login.html',
+    controller: 'LoginController as loginController'
+  }).when('/tracker', {
     templateUrl: '/html/tracker',
     controller: 'AwsController as awsController'
   });
   $locationProvider.html5Mode(true);
 });
 
-awstracker.factory('data', function ($rootScope) {
+awstracker.factory('data', function () {
   this.volumes = [];
   this.storage = 0;
   this.cost = 0;
+  this.keyid = '';
+  this.secret = '';
   return this;
 });
 
-awstracker.controller('AwsController', ['$scope',
-'$route','$routeParams','$location', 'data',
-  function($scope, $route, $routeParams, $location, shareddata){
+awstracker.controller('LoginController', ['$scope', '$location', 'data',
+  function($scope, $location, appdata){
+    $scope.appdata = appdata;
+    $scope.submit = function(){
+      if(appdata.keyid.length > 0 && appdata.secret.length > 0)
+        $location.path('/tracker');
+    }
+}]);
+
+awstracker.controller('AwsController', ['$scope', 'data',
+  function($scope, shareddata){
     $scope.shareddata = shareddata;
-    $scope.$watchCollection('shareddata.volumes', function(){ //Watch for new volumes and adjust total storage
-      var size = 0;
-      shareddata.volumes.map(function(volume){
-          console.log(volume.Size);
-          size += volume.Size;
-      })
-      shareddata.storage = size;
-      shareddata.cost = size * 0.12;
-    })
+
     $scope.regions = {
       virginia: 'us-east-1',
       california: 'us-west-1',
@@ -48,30 +50,23 @@ awstracker.controller('AwsController', ['$scope',
 
 awstracker.controller('RegionController', ['$scope', 'aws', 'data',
   function($scope, aws, shareddata){
+    $scope.regiondata = {
+      volumes: [],
+      notattached: 0,
+      attached: 0,
+      storage: 0,
+      cost:0
+    }
     $scope.volumes = [];
     $scope.total_storage = 0;
     $scope.total_cost = 0;
 
-    $scope.$watchCollection('volumes', function(){ //Watch for new volumes and adjust total storage
-      var size = 0;
-      console.log('update volumes');
-      $scope.volumes.map(function(volume){
-          console.log(volume.Size);
-          size += volume.Size;
-      })
-      $scope.total_storage = size;
-      $scope.total_cost = size * 0.12;
-    })
-
     $scope.init = function(region_name){
-      $scope.aws = aws.make(region_name);
-      // var aws2 = aws.make('ap-northeast-2');
-      // var aws3 = aws.make('us-east-1');
+      $scope.aws = aws.make(region_name, shareddata.keyid, shareddata.secret);
       $scope.aws.findStoppedInstances().then(function(data){
         if(data.NextToken){
           console.log('there are more stopped instances');
         }
-        console.log(data)
         $scope.reservations = data.Reservations;
         $scope.$apply();
       }).catch(function(err){
@@ -82,9 +77,16 @@ awstracker.controller('RegionController', ['$scope', 'aws', 'data',
         if(data.NextToken){
           console.log('there are more available volumes');
         }
-        console.log(data);
-        $scope.volumes.push.apply($scope.volumes, data.Volumes);
+        $scope.regiondata.volumes.push.apply($scope.regiondata.volumes, data.Volumes);
         shareddata.volumes.push.apply(shareddata.volumes, data.Volumes);
+        data.Volumes.forEach(function(volume){
+          $scope.regiondata.storage += volume.Size;//Local Region scope
+          $scope.regiondata.cost += 0.12*volume.Size;
+          $scope.regiondata.notattached++;
+
+          shareddata.storage += volume.Size;//All Region scope
+          shareddata.cost += 0.12*volume.Size;
+        })
         $scope.$apply();
       }).catch(function(err){
         console.log(err);
@@ -98,10 +100,16 @@ awstracker.controller('VolumeController', ['$scope', 'data',
     $scope.init = function(volume){
       $scope.aws.findVolume(volume).then(function(data){
         if(data.Volumes.length > 0){
-          console.log(data);
           $scope.volumedata = data.Volumes[0];
-          $scope.volumes.push(data.Volumes[0]);
+          $scope.regiondata.volumes.push(data.Volumes[0]);
           shareddata.volumes.push(data.Volumes[0]);
+
+          $scope.regiondata.storage += data.Volumes[0].Size;//Local Region scope
+          $scope.regiondata.cost = 0.12*$scope.regiondata.storage;
+          $scope.regiondata.attached++;
+
+          shareddata.storage += data.Volumes[0].Size;//All Region scope
+          shareddata.cost = 0.12*shareddata.storage;
         }
         $scope.$apply();
       }).catch(function(err){

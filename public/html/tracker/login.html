@@ -1,0 +1,28 @@
+<div class="container" style="position:absolute; left:35%; top:15%;">
+  <div class="row">
+        <div class="col-md-5">
+          <p>
+          This tool uses the browser version of aws-sdk to find volume resources that are not being used or idel.
+          The key information is not shared with the server. All API calls are run from the local browser.
+          </p>
+          <p>
+            The user needs read-only access to EC2 (AmazonEC2ReadOnlyAccess)
+          </p>
+        </div>
+  </div>
+  <div class="row">
+      <div class="col-md-5">
+        <center>
+          <div class="input-group">
+            <input type="text" ng-model="appdata.keyid" class="form-control" placeholder="Key ID" aria-describedby="basic-addon1">
+          </div>
+          <div class="input-group">
+            <input type="text" ng-model="appdata.secret" class="form-control" placeholder="Secret Key" aria-describedby="basic-addon1">
+          </div>
+          <div class="btn-group" role="group" aria-label="submit">
+            <button type="button" class="btn btn-default" ng-click="submit()">Set Key</button>
+          </div>
+        </center>
+      </div>
+  </div>
+</div>
