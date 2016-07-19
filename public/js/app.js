@@ -57,9 +57,6 @@ awstracker.controller('RegionController', ['$scope', 'aws', 'data',
       storage: 0,
       cost:0
     }
-    $scope.volumes = [];
-    $scope.total_storage = 0;
-    $scope.total_cost = 0;
 
     $scope.init = function(region_name){
       $scope.aws = aws.make(region_name, shareddata.keyid, shareddata.secret);
