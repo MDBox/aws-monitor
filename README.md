@@ -3,6 +3,8 @@ This project uses the aws-sdk browser plugin to find aws volumes that are either
   
 The is a prototype project to expore the aws-sdk.  Please use at your own risk. This project should be used as an example reference only. All content, unless otherwise stated, is open-source and free.
 
+## S3 Test URL
+http://mdbox-awsmonitor.s3-website-ap-northeast-1.amazonaws.com/
 
 ## Node/express server  
 ```
